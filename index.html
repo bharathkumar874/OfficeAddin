@@ -41,17 +41,16 @@
         }
 		
 		function openWindow() {
-			instance = window.open("https://bharathkumar874.github.io/windowPostMessage/",'_blank', "width=800,height=800,scrollbars, resizable");
+            var target = "userConsole";//_blank
+			instance = window.open("https://bharathkumar874.github.io/windowPostMessage/",target, "width=800,height=800,scrollbars, resizable");
 			console.log(instance);
 			writeMessage('openWindow ' , JSON.stringify({ windowOpened: true }))
         }
 
         function startProcedure() {
             initMessageListener();
-            <!-- sendPostMessage(":Attempt - 1"); -->
             setTimeout(function () {
                 //writeMessage('Procedure complete', JSON.stringify({ compleat: true }))
-                <!-- sendPostMessage(":Attempt - 2"); -->
             }, 1000)
         }
 		
