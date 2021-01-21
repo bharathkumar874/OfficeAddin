@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addin</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        function writeMessage(title, text) {
+            $('#messages').append(
+                $(document.createElement('div')).addClass('message').html('<h2>' + title + '</h2><pre>'+text+'</pre><hr/>')
+            );
+        }
+
+        function initMessageListener () {
+            if (window.addEventListener) {
+                window.addEventListener('message', function (e) {
+                    writeMessage('Message from ' + e.origin, JSON.stringify(e.data));
+                });
+            } else {
+                window.onmessage = function (e) {
+                    writeMessage('Message from ' + e.origin, JSON.stringify(e.data));
+                };
+            }
+
+            writeMessage('Message listener added', JSON.stringify({ compleat: true }));
+        }
+		
+		var instance = null;
+        function sendPostMessage() {
+			if(instance){
+				instance.postMessage(JSON.stringify({ event: 'from Addin', params: "Addin - " + new Date() }), "https://bharathkumar874.github.io/windowPostMessage/");				
+				console.log("sendPostMessage - message sent");
+				writeMessage('sendPostMessage ' , JSON.stringify({ messageSent: true }));
+			}
+			else{				
+				console.log("sendPostMessage - message not sent");
+				writeMessage('sendPostMessage ' , JSON.stringify({ messageSent: false }));
+			}
+        }
+		
+		function openWindow() {
+			instance = window.open("https://bharathkumar874.github.io/windowPostMessage/",'_blank', "width=800,height=400");
+			console.log(instance);
+			writeMessage('openWindow ' , JSON.stringify({ windowOpened: true }))
+        }
+
+        function startProcedure() {
+            initMessageListener();
+            <!-- sendPostMessage(":Attempt - 1"); -->
+            setTimeout(function () {
+                //writeMessage('Procedure complete', JSON.stringify({ compleat: true }))
+                <!-- sendPostMessage(":Attempt - 2"); -->
+            }, 1000)
+        }
+		
+
+        $(document).ready(startProcedure);
+
+    </script>
+</head>
+<body>
+    <h1>Addin page</h1>
+	
+	<p onclick="openWindow()">Open Window</p>
+	<p onclick="sendPostMessage()">Send post message</p>
+    <div id="messages"></div>
+</body>
+</html>
+
+
+
+<!-- <html>
+
+<head>
+    <title>Spacewell</title>
+    <script>
+        var event = null;
+        window.addEventListener('message', function(a) {
+            event = a;
+            console.log('message received from room finder');
+            console.log(a);
+            a.source.postMessage("Hi, This message is from Local HTML file",
+                event.origin);
+                sendMessage();
+        });
+
+        function sendMessage(){
+            if(event){
+                console.log("event exist");
+                event.source.postMessage("Its working. This message is from target host",
+                event.origin);
+                console.log(event.origin);
+            }
+            else{
+                console.log("event scope doesn't exist");
+                window.postMessage("Hello", "http://localhost:5000/");
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <p>
+        This is new stand alone page
+    </p>
+    <button onclick="sendMessage()">Send explicit message</button>
+</body>
+
+</html> -->
